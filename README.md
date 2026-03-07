@@ -1,0 +1,228 @@
+# 🏦 Bank Credit Card Customer Analysis
+
+## 📁 Project Overview
+
+This project analyzes a bank's credit card customer dataset using **Python** for data cleaning, **MySQL** for querying, and **Power BI** for visualization. The goal is to uncover customer behavior patterns, churn drivers, and demographic insights.
+
+---
+
+## 📂 Files in This Project
+
+| File | Description |
+|------|-------------|
+| `Churn_Modelling.csv` | Original raw dataset from Kaggle |
+| `bankcrcard.ipynb` | Python notebook used for data cleaning |
+| `bank_crcard.csv` | Cleaned dataset ready for MySQL & Power BI |
+| `bank_crcard.sql` | All SQL queries for analysis |
+| `bank_crcard_dashboard.pbix` | Power BI dashboard file |
+
+---
+
+## 🗄️ Dataset
+
+- **Source:** [Kaggle – Churn Modelling Dataset](https://www.kaggle.com/)
+- **Rows:** 10,000 customers
+- **Columns:** 14
+
+### Column Reference
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `rownumber` | INT | Row identifier |
+| `customerid` | INT | Unique customer ID |
+| `surname` | TEXT | Customer last name |
+| `creditscore` | INT | Credit score (350–850) |
+| `geography` | TEXT | Country: France, Spain, Germany |
+| `gender` | TEXT | Male / Female |
+| `age` | INT | Customer age |
+| `tenure` | INT | Years with the bank (0–10) |
+| `balance` | FLOAT | Account balance |
+| `numofproducts` | INT | Number of bank products held (1–4) |
+| `hascrcard` | TEXT | Has credit card: Yes / No |
+| `isactivemember` | TEXT | Active member: Yes / No |
+| `estimatedsalary` | FLOAT | Estimated annual salary |
+| `exited` | TEXT | Churned: Yes / No |
+
+---
+
+## 🐍 Data Cleaning (Python Notebook)
+
+The raw Kaggle file `Churn_Modelling.csv` had column names in PascalCase and binary values (0/1) in the `HasCrCard`, `IsActiveMember`, and `Exited` columns. I cleaned it using `bankcrcard.ipynb` before importing into MySQL.
+
+### Steps Performed
+
+**Step 1 — Load the raw dataset**
+```python
+import pandas as pd
+df = pd.read_csv("Churn_Modelling.csv")
+df.head()
+```
+
+**Step 2 — Check column names**
+```python
+df.columns
+# Index(['RowNumber', 'CustomerId', 'Surname', 'CreditScore', 'Geography',
+#        'Gender', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'HasCrCard',
+#        'IsActiveMember', 'EstimatedSalary', 'Exited'])
+```
+
+**Step 3 — Lowercase all column names**
+```python
+df.columns = df.columns.str.lower()
+```
+
+**Step 4 — Convert 0/1 to Yes/No for readable columns**
+```python
+maps = ['hascrcard', 'isactivemember', 'exited']
+
+for col in maps:
+    df[col] = df[col].map({1: 'Yes', 0: 'No'})
+```
+
+**Step 5 — Export cleaned CSV**
+```python
+df.to_csv("bank_crcard.csv", index=False, encoding="utf-8")
+```
+
+### Before vs After
+
+| Column | Before | After |
+|--------|--------|-------|
+| Column names | `HasCrCard`, `IsActiveMember` | `hascrcard`, `isactivemember` |
+| HasCrCard values | `1`, `0` | `Yes`, `No` |
+| IsActiveMember values | `1`, `0` | `Yes`, `No` |
+| Exited values | `1`, `0` | `Yes`, `No` |
+
+---
+
+## 🛢️ MySQL Setup
+
+```sql
+-- Create the table
+CREATE TABLE bank_crcard (
+    rownumber       INT,
+    customerid      INT,
+    surname         VARCHAR(100),
+    creditscore     INT,
+    geography       VARCHAR(50),
+    gender          VARCHAR(10),
+    age             INT,
+    tenure          INT,
+    balance         FLOAT,
+    numofproducts   INT,
+    hascrcard       VARCHAR(5),
+    isactivemember  VARCHAR(5),
+    estimatedsalary FLOAT,
+    exited          VARCHAR(5)
+);
+
+-- Import the cleaned CSV
+LOAD DATA INFILE '/path/to/bank_crcard.csv'
+INTO TABLE bank_crcard
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+```
+
+---
+
+## 📊 SQL Queries Summary
+
+| # | Query | Purpose |
+|---|-------|---------|
+| Q1 | Total Customers | Overall count |
+| Q2 | Credit Card Holders | Has/no credit card % |
+| Q3 | Exited Customers | Churn count & % |
+| Q4 | Active vs Inactive | Member activity split |
+| Q5 | Customers by Geography | Country-wise count |
+| Q6 | Above-Avg Credit Score | High credit score customers |
+| Q7 | Avg Balance/Score/Salary by Geography | Regional financials |
+| Q8 | Exited by Gender | Gender-wise churn |
+| Q9 | Customers by No. of Products | Product distribution |
+| Q10 | Age Group Distribution | Age segment breakdown |
+| Q11 | Zero Balance Customers | Inactive balance holders |
+| Q12 | Top 10 by Balance | Highest value customers |
+| Q13 | Churn Rate by Geography | Regional churn % |
+| Q14 | Churn Rate by No. of Products | Product-wise churn |
+| Q15 | Avg Tenure & Balance (Exited vs Retained) | Retention comparison |
+| Q16 | Credit Score Buckets & Churn | Score range vs churn rate |
+
+---
+
+## 📈 Power BI Dashboard
+
+### How to Connect
+
+1. Open Power BI Desktop
+2. Click **Get Data → Text/CSV**
+3. Select `bank_crcard.csv`
+4. Click **Transform Data** to open Power Query
+5. Verify column types:
+   - `creditscore`, `age`, `tenure`, `numofproducts` → **Whole Number**
+   - `balance`, `estimatedsalary` → **Decimal Number**
+   - `hascrcard`, `isactivemember`, `exited` → **Text**
+
+### Recommended Visuals
+
+| Visual Type | Fields | Purpose |
+|-------------|--------|---------|
+| Card | COUNT(customerid) | Total Customers KPI |
+| Donut Chart | exited | Churn vs Retained |
+| Bar Chart | geography, COUNT(*) | Customers by Country |
+| Stacked Bar | gender, exited | Churn by Gender |
+| Bar Chart | age_grp, COUNT(*) | Age Distribution |
+| Pie Chart | hascrcard | Credit Card Holders |
+| Matrix | geography, exited | Churn Rate Table |
+| Line Chart | tenure, AVG(balance) | Balance over Tenure |
+
+### Suggested DAX Measures
+
+```dax
+-- Total Customers
+Total Customers = COUNT(bank_crcard[customerid])
+
+-- Churn Count
+Churned = COUNTROWS(FILTER(bank_crcard, bank_crcard[exited] = "Yes"))
+
+-- Churn Rate %
+Churn Rate = DIVIDE([Churned], [Total Customers], 0) * 100
+
+-- Active Members
+Active Members = COUNTROWS(FILTER(bank_crcard, bank_crcard[isactivemember] = "Yes"))
+
+-- Avg Credit Score
+Avg Credit Score = AVERAGE(bank_crcard[creditscore])
+
+-- Avg Balance
+Avg Balance = AVERAGE(bank_crcard[balance])
+```
+
+### Recommended Slicers
+
+- `geography` — filter by country
+- `gender` — filter by gender
+- `hascrcard` — credit card holders
+- `isactivemember` — active/inactive
+- `numofproducts` — number of products
+- `exited` — churned vs retained
+
+---
+
+## 🔍 Key Insights to Look For
+
+- Which geography has the highest churn rate?
+- Do inactive members churn more?
+- Is there a link between number of products and churn?
+- Which age group has the highest exit rate?
+- Do customers with zero balance tend to exit more?
+
+---
+
+## 🛠️ Tools Used
+
+| Tool | Purpose |
+|------|---------|
+| Python (pandas) | Data cleaning & CSV export |
+| Jupyter Notebook | Running the cleaning script |
+| MySQL Workbench | Data querying & analysis |
+| Power BI Desktop | Dashboard & visualizations |
