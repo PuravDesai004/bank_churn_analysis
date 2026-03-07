@@ -12,9 +12,10 @@ This project analyzes a bank's credit card customer dataset using **Python** for
 |------|-------------|
 | `Churn_Modelling.csv` | Original raw dataset from Kaggle |
 | `bankcrcard.ipynb` | Python notebook used for data cleaning |
-| `bank_crcard.csv` | Cleaned dataset ready for MySQL & Power BI |
-| `bank_crcard.sql` | All SQL queries for analysis |
-| `bank_crcard_dashboard.pbix` | Power BI dashboard file |
+| `bank_crcard_fixed.csv` | Cleaned dataset ready for MySQL & Power BI |
+| `bank_churn.sql` | All SQL queries for analysis |
+| `churn_analysis.pbix` | Power BI dashboard file |
+| `churn_analysis.pdf` | Exported PDF of the Power BI dashboard |
 
 ---
 
@@ -81,7 +82,7 @@ for col in maps:
 
 **Step 5 — Export cleaned CSV**
 ```python
-df.to_csv("bank_crcard.csv", index=False, encoding="utf-8")
+df.to_csv("bank_crcard_fixed.csv", index=False, encoding="utf-8")
 ```
 
 ### Before vs After
@@ -117,7 +118,7 @@ CREATE TABLE bank_crcard (
 );
 
 -- Import the cleaned CSV
-LOAD DATA INFILE '/path/to/bank_crcard.csv'
+LOAD DATA INFILE '/path/to/bank_crcard_fixed.csv'
 INTO TABLE bank_crcard
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
@@ -147,14 +148,36 @@ IGNORE 1 ROWS;
 | Q15 | Avg Tenure & Balance (Exited vs Retained) | Retention comparison |
 | Q16 | Credit Score Buckets & Churn | Score range vs churn rate |
 
+---
 
-## 🔍 Key Insights to Look For
+## 📈 Power BI Dashboard
 
-- Which geography has the highest churn rate?
-- Do inactive members churn more?
-- Is there a link between number of products and churn?
-- Which age group has the highest exit rate?
-- Do customers with zero balance tend to exit more?
+The dashboard is split across **2 pages**:
+
+**Page 1 — Customer Overview**
+- KPI Cards: Total Customers (10K), Churned (2K), Churn Rate (20.37%), Active Members (5K)
+- Churn vs Retained donut chart
+- Customers by Country bar chart
+- Churn by Gender stacked bar
+
+**Page 2 — Churn Deep Dive**
+- Avg Balance over Tenure line chart
+- Credit Card Holders pie chart
+- Active vs Inactive Churn stacked bar
+- KPI Cards: Avg Credit Score (649.12), Avg Balance (98.55K), Avg Tenure Churned (4.91), Avg Tenure Retained (5.00)
+- Number of Products slicer
+
+> 📄 See `churn_analysis.pdf` for a full exported preview of the dashboard.
+
+---
+
+## 🔍 Key Insights
+
+- **20.37%** of customers churned
+- **France** has the most customers (5K) but **Germany** has a higher churn rate
+- **Females** churn more than males despite fewer total customers
+- **Inactive members** are significantly more likely to exit
+- Avg tenure is almost identical for churned (4.91) vs retained (5.00) — tenure alone doesn't predict churn
 
 ---
 
