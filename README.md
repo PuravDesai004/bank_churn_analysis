@@ -147,66 +147,6 @@ IGNORE 1 ROWS;
 | Q15 | Avg Tenure & Balance (Exited vs Retained) | Retention comparison |
 | Q16 | Credit Score Buckets & Churn | Score range vs churn rate |
 
----
-
-## 📈 Power BI Dashboard
-
-### How to Connect
-
-1. Open Power BI Desktop
-2. Click **Get Data → Text/CSV**
-3. Select `bank_crcard.csv`
-4. Click **Transform Data** to open Power Query
-5. Verify column types:
-   - `creditscore`, `age`, `tenure`, `numofproducts` → **Whole Number**
-   - `balance`, `estimatedsalary` → **Decimal Number**
-   - `hascrcard`, `isactivemember`, `exited` → **Text**
-
-### Recommended Visuals
-
-| Visual Type | Fields | Purpose |
-|-------------|--------|---------|
-| Card | COUNT(customerid) | Total Customers KPI |
-| Donut Chart | exited | Churn vs Retained |
-| Bar Chart | geography, COUNT(*) | Customers by Country |
-| Stacked Bar | gender, exited | Churn by Gender |
-| Bar Chart | age_grp, COUNT(*) | Age Distribution |
-| Pie Chart | hascrcard | Credit Card Holders |
-| Matrix | geography, exited | Churn Rate Table |
-| Line Chart | tenure, AVG(balance) | Balance over Tenure |
-
-### Suggested DAX Measures
-
-```dax
--- Total Customers
-Total Customers = COUNT(bank_crcard[customerid])
-
--- Churn Count
-Churned = COUNTROWS(FILTER(bank_crcard, bank_crcard[exited] = "Yes"))
-
--- Churn Rate %
-Churn Rate = DIVIDE([Churned], [Total Customers], 0) * 100
-
--- Active Members
-Active Members = COUNTROWS(FILTER(bank_crcard, bank_crcard[isactivemember] = "Yes"))
-
--- Avg Credit Score
-Avg Credit Score = AVERAGE(bank_crcard[creditscore])
-
--- Avg Balance
-Avg Balance = AVERAGE(bank_crcard[balance])
-```
-
-### Recommended Slicers
-
-- `geography` — filter by country
-- `gender` — filter by gender
-- `hascrcard` — credit card holders
-- `isactivemember` — active/inactive
-- `numofproducts` — number of products
-- `exited` — churned vs retained
-
----
 
 ## 🔍 Key Insights to Look For
 
