@@ -8,8 +8,8 @@ Power BI for visualization.
 
 ## Dashboard
 
-![Churn Dashboard Page 1](dashboard_page1.jpg)
-![Churn Dashboard Page 2](dashboard_page2.jpg)
+![Churn Dashboard Page 1](dashboard_screenshot1.jpg)
+![Churn Dashboard Page 2](dashboard_screenshot2.jpg)
 
 ---
 
