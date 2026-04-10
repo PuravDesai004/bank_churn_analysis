@@ -1,6 +1,6 @@
 # Bank Customer Churn Analysis — Python, SQL, and Power BI
 
-End-to-end analysis of 10,000 bank customers to identify churn drivers and
+End to end analysis of 10,000 bank customers to identify churn drivers and
 behavioral patterns using Python for data cleaning, MySQL for querying, and
 Power BI for visualization.
 
@@ -78,20 +78,20 @@ Before vs after:
 
 ## Key Findings
 
-### 1. 1 in 5 customers churned — Germany is the problem state
+### 1. 1 in 5 customers churned: Germany is the problem state
 Overall churn rate is 20.37%. Germany has a significantly higher churn rate
 than France and Spain despite having fewer total customers. Geographic targeting
-of retention efforts — especially in Germany — would have the highest ROI.
+of retention efforts especially in Germany would have the highest ROI.
 
 ### 2. Inactive members churn at nearly double the rate of active members
 Activity status is the strongest predictor of churn in this dataset. Customers
-marked as inactive are far more likely to exit. Re-engagement campaigns targeting
+marked as inactive are far more likely to exit. Re engagement campaigns targeting
 inactive members should be the bank's first retention priority.
 
 ### 3. Tenure alone does not predict churn
 Average tenure for churned customers (4.91 years) is almost identical to retained
 customers (5.00 years). This means long-standing customers are just as likely to
-leave as newer ones — the bank cannot rely on relationship length as a retention signal.
+leave as newer ones the bank cannot rely on relationship length as a retention signal.
 
 ---
 
