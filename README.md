@@ -63,7 +63,7 @@ df.columns = df.columns.str.lower()
 for col in ['hascrcard', 'isactivemember', 'exited']:
     df[col] = df[col].map({1: 'Yes', 0: 'No'})
 
-df.to_csv("bank_crcard_fixed.csv", index=False)
+df.to_csv("bank_crcard.csv", index=False)
 ```
 
 Before vs after:
@@ -80,18 +80,16 @@ Before vs after:
 
 ### 1. 1 in 5 customers churned: Germany is the problem state
 Overall churn rate is 20.37%. Germany has a significantly higher churn rate
-than France and Spain despite having fewer total customers. Geographic targeting
-of retention efforts especially in Germany would have the highest ROI.
+than France and Spain despite having fewer total customers. The data does not establish the return on a particular retention campaign.
 
 ### 2. Inactive members churn at nearly double the rate of active members
-Activity status is the strongest predictor of churn in this dataset. Customers
-marked as inactive are far more likely to exit. Re engagement campaigns targeting
-inactive members should be the bank's first retention priority.
+Inactive members have a higher observed churn rate in this dataset. This comparison
+does not establish causation or evaluate a predictive model.
 
 ### 3. Tenure alone does not predict churn
 Average tenure for churned customers (4.91 years) is almost identical to retained
-customers (5.00 years). This means long-standing customers are just as likely to
-leave as newer ones the bank cannot rely on relationship length as a retention signal.
+customers (5.00 years). Similar group averages alone do not establish whether tenure predicts churn
+after accounting for other factors.
 
 ---
 
@@ -136,7 +134,7 @@ Page 2 — Churn Deep Dive:
 ## Files
 
 ```
-├── Churn_Modelling.csv         
+├── Churn_Modelling.csv         (not included; required by the notebook)
 ├── bankcrcard.ipynb            
 ├── bank_crcard_fixed.csv       
 ├── bank_churn.sql              
@@ -148,10 +146,18 @@ Page 2 — Churn Deep Dive:
 
 ## How to Run
 
-1. Open `bankcrcard.ipynb` in Jupyter and run all cells to generate `bank_crcard_fixed.csv`
-2. Import `bank_crcard_fixed.csv` into MySQL
-3. Run queries from `bank_churn.sql` in MySQL Workbench
-4. Open `churn_analysis.pbix` in Power BI Desktop
+1. Obtain the original `Churn_Modelling.csv`; its exact source listing is not recorded in this repository. The notebook currently reads it from `C:/Users/purav/Downloads/Churn_Modelling.csv`.
+2. Review that path before running `bankcrcard.ipynb`. The notebook writes `bank_crcard.csv`; `bank_crcard_fixed.csv` is the separate cleaned CSV already included here.
+3. Import the included cleaned CSV into MySQL and run `bank_churn.sql`.
+4. Open `churn_analysis.pbix` in Power BI Desktop.
+
+The raw-input notebook and MySQL workflow were not rerun in the latest audit because the original input and MySQL were unavailable. The included cleaned CSV contains 10,000 rows and 2,037 `Yes` churn labels (20.37%). Reproduce the count from this folder:
+
+```powershell
+python -c "import csv; r=list(csv.DictReader(open('bank_crcard_fixed.csv', encoding='utf-8-sig', newline=''))); n=sum(x['exited']=='Yes' for x in r); print(len(r), n, round(100*n/len(r), 2))"
+```
+
+The source and permission to redistribute the customer identifiers and surnames in the CSV require confirmation.
 
 ---
 
